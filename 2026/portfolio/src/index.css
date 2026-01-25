@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+/* Minimal reset only */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+}
+
+.mux-contain {
+  width: 100%;
+  max-width: 100%;
+}
+
+mux-player {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: black;
+}
+
+/* Base theme */
+mux-player {
+  --media-accent-color: #7e7e7e81;
+  --media-control-hover-background: rgba(0, 0, 0, 0.38);
+  --media-control-background: rgba(0, 0, 0, 0.4);
+  --media-text-color: #00000059;
+}
+
+/* Remove center overlay play button */
+mux-player::part(center-play-button) {
+  display: none;
+}
+
+/* Hide timeline / scrubber */
+mux-player::part(time-range) {
+  display: none;
+}
+
+/* Hide time readouts */
+mux-player::part(current-time),
+mux-player::part(duration) {
+  display: none;
+}
+
+/* Hide captions + settings */
+mux-player::part(captions-button),
+mux-player::part(settings-button) {
+  display: none;
+}
+
+/* Keep only play / pause, volume, fullscreen */
+mux-player::part(play-button),
+mux-player::part(volume-button),
+mux-player::part(fullscreen-button) {
+  display: inline-flex;
+}
+
+/* Make controls smaller + subtle */
+mux-player::part(control-bar) {
+  padding: 6px 10px;
+}
+
+/* 
+a {
+  font-weight: 500;
+  color: #ffffffff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #a9a9a9ff;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+} */
