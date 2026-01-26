@@ -3,12 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://n-is-k.github.io/Kirtis-Clarke",
+  "homepage": ".",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "vite build && cp public/404.html dist/404.html",
+    "predeploy": "npm run build",
+    "dev": "vite"
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^16.1.6",

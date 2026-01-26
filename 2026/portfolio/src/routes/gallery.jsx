@@ -8,12 +8,24 @@ import { useInViewFade } from "../hooks/useInViewFade";
    Contentful image helpers
 ----------------------------------------- */
 
-const buildImage = (url, width, quality = 80) =>
-  `${url}?w=${width}&fm=webp&q=${quality}`;
+const buildImage = (url, width, quality = 80) => {
+  if (url.includes(".gif")) {
+    // For GIFs, still apply width but keep GIF format
+    // Some CDNs can resize GIFs properly
+    return `${url}?w=${width}&fm=gif`;
+  }
 
-const buildSrcSet = (url, widths = [600, 1200, 1800, 2400]) =>
-  widths.map((w) => `${buildImage(url, w)} ${w}w`).join(", ");
+  return `${url}?w=${width}&fm=webp&q=${quality}`;
+};
 
+const buildSrcSet = (url, widths = [600, 1200, 1800, 2400]) => {
+  if (url.includes(".gif")) {
+    // For GIFs, create srcSet with GIF format
+    return widths.map((w) => `${url}?w=${w}&fm=gif ${w}w`).join(", ");
+  }
+
+  return widths.map((w) => `${buildImage(url, w)} ${w}w`).join(", ");
+};
 /* ----------------------------------------
    Fade-in image wrapper
 ----------------------------------------- */
