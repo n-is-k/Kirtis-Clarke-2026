@@ -3,16 +3,24 @@
   <head>
     <meta charset="utf-8">
     <title>kirtisclarke.co.uk</title>
-    <script>
-      // Capture the URL the user was trying to reach
-      const redirect = location.pathname + location.search;
-      if (redirect !== '/') {
-        sessionStorage.setItem('redirect', redirect);
+    <style>
+      /* Make the page completely invisible */
+      body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        display: none;
       }
+    </style>
+    <script>
+      // Capture the intended URL
+      const path = window.location.pathname + window.location.search;
+      if (path !== '/') {
+        sessionStorage.setItem('redirect', path);
+      }
+      // Redirect immediately
+      window.location.replace('/');
     </script>
-    <meta http-equiv="refresh" content="0;URL='/'">
   </head>
-  <body>
-    Redirecting...
-  </body>
+  <body style="display:none;"></body>
 </html>
