@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://n-is-k.github.io/Kirtis-Clarke",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

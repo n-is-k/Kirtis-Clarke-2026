@@ -68,7 +68,7 @@ export default function Projects() {
 
   const prevProject = () => {
     setSelectedProjectIndex(
-      (prev) => (prev - 1 + projects.length) % projects.length
+      (prev) => (prev - 1 + projects.length) % projects.length,
     );
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -151,7 +151,7 @@ export default function Projects() {
               {/* {selectedProject.description} */}
               {documentToReactComponents(
                 selectedProject.description,
-                richTextOptions
+                richTextOptions,
               )}
             </p>
           </div>

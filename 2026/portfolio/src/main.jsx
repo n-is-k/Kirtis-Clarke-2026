@@ -12,9 +12,27 @@ import "./index.css";
 
 const queryClient = new QueryClient();
 
+// 1. FIX FOR PAGE RELOADS - This runs before React renders
+(() => {
+  // Check if we're coming from the 404.html redirect
+  const redirect = sessionStorage.getItem("redirect");
+
+  if (redirect) {
+    sessionStorage.removeItem("redirect");
+
+    // Only redirect if we're not already there
+    if (redirect !== window.location.pathname + window.location.search) {
+      window.history.replaceState(null, null, redirect);
+    }
+  }
+})();
+
+// 2. Your React app
 createRoot(document.getElementById("root")).render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
+      {" "}
+      {/* NO basename for custom root domain */}
       <Nav />
       <Routes>
         <Route path="/" element={<Index />} />
@@ -24,5 +42,5 @@ createRoot(document.getElementById("root")).render(
         <Route path="/about" element={<About />} />
       </Routes>
     </BrowserRouter>
-  </QueryClientProvider>
+  </QueryClientProvider>,
 );
