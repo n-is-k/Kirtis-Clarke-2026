@@ -27,7 +27,7 @@ export default function Index() {
         </h1>
 
         <Link
-          to="/projects"
+          to="/works"
           className="inline-block mt-8 text-xs tracking-wide uppercase border border-white px-6 py-2
                      hover:bg-white hover:text-black transition-all duration-200"
         >

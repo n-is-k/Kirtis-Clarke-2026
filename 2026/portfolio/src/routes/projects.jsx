@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { getProjects } from "../lib/contentfulProjects";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { BLOCKS, INLINES } from "@contentful/rich-text-types";
@@ -9,7 +10,7 @@ const richTextOptions = {
     [BLOCKS.PARAGRAPH]: (_, children) => (
       <p className="leading-relaxed">{children}</p>
     ),
-    [BLOCKS.HEADING_2]: (_, children) => (
+    [BLOCKS.HEADING_2]: (_, children) => ( 
       <h2 className="text-xs uppercase tracking-wide text-neutral-500 mt-8 mb-2">
         {children}
       </h2>
@@ -25,19 +26,25 @@ const richTextOptions = {
   },
 };
 
+const generateSlug = (title) => title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
 export default function Projects() {
+  const { slug } = useParams();
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedProjectIndex, setSelectedProjectIndex] = useState(0);
 
   useEffect(() => {
     getProjects()
       .then((data) => {
         setProjects(data);
         setIsLoading(false);
+        if (!slug && data.length > 0) {
+          navigate(`/projects/${generateSlug(data[0].title)}`, { replace: true });
+        }
       })
       .catch(() => setIsLoading(false));
-  }, []);
+  }, [slug, navigate]);
 
   if (isLoading) {
     return (
@@ -49,7 +56,7 @@ export default function Projects() {
     );
   }
 
-  const selectedProject = projects[selectedProjectIndex];
+  const selectedProject = slug ? projects.find(p => generateSlug(p.title) === slug) || projects[0] : projects[0];
   if (!selectedProject) return null;
 
   // 🔑 Rebuild Base44-style image array
@@ -61,15 +68,17 @@ export default function Projects() {
   const heroImage = images[0] || null;
   const additionalImages = images.slice(1);
 
+  const currentIndex = projects.findIndex(p => p.id === selectedProject.id);
+
   const nextProject = () => {
-    setSelectedProjectIndex((prev) => (prev + 1) % projects.length);
+    const nextIndex = (currentIndex + 1) % projects.length;
+    navigate(`/projects/${generateSlug(projects[nextIndex].title)}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const prevProject = () => {
-    setSelectedProjectIndex(
-      (prev) => (prev - 1 + projects.length) % projects.length,
-    );
+    const prevIndex = (currentIndex - 1 + projects.length) % projects.length;
+    navigate(`/projects/${generateSlug(projects[prevIndex].title)}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -80,12 +89,9 @@ export default function Projects() {
         {projects.map((project, index) => (
           <button
             key={project.id}
-            onClick={() => {
-              setSelectedProjectIndex(index);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
+            onClick={() => navigate(`/projects/${generateSlug(project.title)}`)}
             className={`text-xs uppercase tracking-wide transition-opacity ${
-              selectedProjectIndex === index
+              selectedProject.id === project.id
                 ? "opacity-100"
                 : "opacity-40 hover:opacity-60"
             }`}

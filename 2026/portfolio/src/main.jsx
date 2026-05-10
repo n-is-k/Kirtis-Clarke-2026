@@ -37,7 +37,7 @@ createRoot(document.getElementById("root")).render(
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/gallery" element={<Gallery />} />
-        <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/:slug?" element={<Projects />} />
         <Route path="/cv" element={<CV />} />
         <Route path="/about" element={<About />} />
       </Routes>
