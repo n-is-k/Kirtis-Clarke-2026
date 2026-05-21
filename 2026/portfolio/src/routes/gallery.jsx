@@ -1,10 +1,8 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getGalleryImages } from "../lib/contentfulGallery";
 import ImageModal from "../components/ImageModal";
 import { useInViewFade } from "../hooks/useInViewFade";
-
-const gridColsOptions = [2, 4, 5];
 
 /* ----------------------------------------
    Contentful image helpers
@@ -76,25 +74,6 @@ export default function Gallery() {
   const [selectedType, setSelectedType] = useState("all");
   const [sortMode, setSortMode] = useState("chronological");
   const [selectedImage, setSelectedImage] = useState(null);
-  const [gridCols, setGridCols] = useState(
-    () => gridColsOptions[Math.floor(Math.random() * gridColsOptions.length)],
-  );
-
-  useEffect(() => {
-    setGridCols(
-      gridColsOptions[Math.floor(Math.random() * gridColsOptions.length)],
-    );
-  }, [selectedYear, selectedType, sortMode, images.length]);
-
-  const colsClass =
-    gridCols === 2
-      ? "md:grid-cols-2"
-      : gridCols === 4
-        ? "md:grid-cols-4"
-        : "md:grid-cols-5";
-
-  const widthClass =
-    gridCols === 2 ? "md:max-w-[80vw] md:mx-auto" : "md:max-w-none";
 
   /* -----------------------------
      Filters
@@ -209,9 +188,7 @@ export default function Gallery() {
 
       {/* Grid */}
       <div className="pt-24 px-6">
-        <div
-          className={`grid grid-cols-2 ${colsClass} gap-[30px] ${widthClass}`}
-        >
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[30px]">
           {filteredImages.map((item) =>
             item.kind === "richtext" ? (
               <div
