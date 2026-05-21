@@ -1,8 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getGalleryImages } from "../lib/contentfulGallery";
 import ImageModal from "../components/ImageModal";
 import { useInViewFade } from "../hooks/useInViewFade";
+
+const gridColsOptions = [2, 4, 5];
 
 /* ----------------------------------------
    Contentful image helpers
@@ -40,8 +42,6 @@ function FadeInImage({ item, onClick }) {
       className={`
         cursor-pointer transition-all duration-700 ease-out
         hover:opacity-80
-        ${item.span === 2 ? "md:col-span-2" : ""}
-        ${item.span === 3 ? "md:col-span-3" : ""}
         ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
       `}
     >
@@ -76,6 +76,25 @@ export default function Gallery() {
   const [selectedType, setSelectedType] = useState("all");
   const [sortMode, setSortMode] = useState("chronological");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [gridCols, setGridCols] = useState(
+    () => gridColsOptions[Math.floor(Math.random() * gridColsOptions.length)],
+  );
+
+  useEffect(() => {
+    setGridCols(
+      gridColsOptions[Math.floor(Math.random() * gridColsOptions.length)],
+    );
+  }, [selectedYear, selectedType, sortMode, images.length]);
+
+  const colsClass =
+    gridCols === 2
+      ? "md:grid-cols-2"
+      : gridCols === 4
+      ? "md:grid-cols-4"
+      : "md:grid-cols-5";
+
+  const widthClass =
+    gridCols === 2 ? "md:max-w-[80vw] md:mx-auto" : "md:max-w-none";
 
   /* -----------------------------
      Filters
@@ -119,10 +138,7 @@ export default function Gallery() {
       filtered = [...filtered].sort(() => Math.random() - 0.5);
     }
 
-    return filtered.map((img) => {
-      const rand = Math.random();
-      return { ...img, span: rand > 0.8 ? 3 : rand > 0.6 ? 2 : 1 };
-    });
+    return filtered;
   }, [images, selectedYear, selectedType, sortMode]);
 
   /* -----------------------------
@@ -193,12 +209,12 @@ export default function Gallery() {
 
       {/* Grid */}
       <div className="pt-24 px-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-[30px]">
+        <div className={`grid grid-cols-2 ${colsClass} gap-[30px] ${widthClass}`}>
           {filteredImages.map((item) =>
             item.kind === "richtext" ? (
               <div
                 key={item.id}
-                className="col-span-2 md:col-span-3 border border-neutral-800 p-4"
+                className="col-span-2 md:col-span-full border border-neutral-800 p-4"
               >
                 {item.richtext && <RichTextBlock document={item.richtext} />}
               </div>
