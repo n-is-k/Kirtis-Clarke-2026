@@ -90,8 +90,8 @@ export default function Gallery() {
     gridCols === 2
       ? "md:grid-cols-2"
       : gridCols === 4
-      ? "md:grid-cols-4"
-      : "md:grid-cols-5";
+        ? "md:grid-cols-4"
+        : "md:grid-cols-5";
 
   const widthClass =
     gridCols === 2 ? "md:max-w-[80vw] md:mx-auto" : "md:max-w-none";
@@ -209,7 +209,9 @@ export default function Gallery() {
 
       {/* Grid */}
       <div className="pt-24 px-6">
-        <div className={`grid grid-cols-2 ${colsClass} gap-[30px] ${widthClass}`}>
+        <div
+          className={`grid grid-cols-2 ${colsClass} gap-[30px] ${widthClass}`}
+        >
           {filteredImages.map((item) =>
             item.kind === "richtext" ? (
               <div
