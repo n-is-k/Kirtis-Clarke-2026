@@ -113,10 +113,14 @@ export default function Gallery() {
     return found || "all";
   };
 
-  // Sync selectedType with slug param
+  // Sync selectedType with slug param, but only after types are available
   useEffect(() => {
-    if (slug && slug !== typeToSlug(selectedType)) {
-      setSelectedType(slugToType(slug));
+    // Only update if types are loaded and slug is present
+    if (types.length > 0) {
+      const correctType = slugToType(slug);
+      if (selectedType !== correctType) {
+        setSelectedType(correctType);
+      }
     }
     // eslint-disable-next-line
   }, [slug, types]);
