@@ -68,7 +68,10 @@ function FadeInImage({ item, onClick }) {
 // Helper to slugify category/type
 const slugify = (str) =>
   str && typeof str === "string"
-    ? str.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+    ? str
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "")
     : "";
 
 export default function Gallery() {
@@ -195,7 +198,11 @@ export default function Gallery() {
             const newType = e.target.value;
             setSelectedType(newType);
             // Update URL slug
-            navigate(newType === "all" ? "/gallery" : `/gallery/${typeToSlug(newType)}`);
+            navigate(
+              newType === "all"
+                ? "/gallery"
+                : `/gallery/${typeToSlug(newType)}`,
+            );
           }}
           className="bg-transparent md:border border-neutral-800 text-xs uppercase px-3 py-1"
         >
