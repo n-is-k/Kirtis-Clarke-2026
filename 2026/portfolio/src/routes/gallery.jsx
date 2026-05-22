@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getGalleryImages } from "../lib/contentfulGallery";
 import ImageModal from "../components/ImageModal";
@@ -64,14 +65,23 @@ function FadeInImage({ item, onClick }) {
    Gallery
 ----------------------------------------- */
 
+// Helper to slugify category/type
+const slugify = (str) =>
+  str && typeof str === "string"
+    ? str.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+    : "";
+
 export default function Gallery() {
+  const navigate = useNavigate();
+  const { slug } = useParams?.() || {};
   const { data: images = [], isLoading } = useQuery({
     queryKey: ["gallery"],
     queryFn: getGalleryImages,
   });
 
   const [selectedYear, setSelectedYear] = useState("all");
-  const [selectedType, setSelectedType] = useState("all");
+  // If slug in URL, use as initial selectedType
+  const [selectedType, setSelectedType] = useState(slug || "all");
   const [sortMode, setSortMode] = useState("chronological");
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -91,6 +101,22 @@ export default function Gallery() {
     const allTypes = [...new Set(images.map((i) => i.type).filter(Boolean))];
     return allTypes.filter((type) => type !== "advisory");
   }, [images]);
+
+  // Map type to slug and back
+  const typeToSlug = (type) => (type === "all" ? "all" : slugify(type));
+  const slugToType = (slug) => {
+    if (!slug || slug === "all") return "all";
+    const found = types.find((t) => slugify(t) === slug);
+    return found || "all";
+  };
+
+  // Sync selectedType with slug param
+  useEffect(() => {
+    if (slug && slug !== typeToSlug(selectedType)) {
+      setSelectedType(slugToType(slug));
+    }
+    // eslint-disable-next-line
+  }, [slug, types]);
 
   /* -----------------------------
      Filtered + sorted images
@@ -165,7 +191,12 @@ export default function Gallery() {
 
         <select
           value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
+          onChange={(e) => {
+            const newType = e.target.value;
+            setSelectedType(newType);
+            // Update URL slug
+            navigate(newType === "all" ? "/gallery" : `/gallery/${typeToSlug(newType)}`);
+          }}
           className="bg-transparent md:border border-neutral-800 text-xs uppercase px-3 py-1"
         >
           <option value="all">All Types</option>
